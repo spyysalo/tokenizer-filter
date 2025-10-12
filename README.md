@@ -15,7 +15,7 @@ Removing 56637 tokens
 Filtered vocab from 199998 to 143361
 Filtered merges from 446189 to 357029
 Updated ids for 21 special tokens
-Updated ids for 0 special tokens in preprocessor
+Updated ids for 0 special tokens in postprocessor
 Saved tokenizer in harmony-latin
 ```
 
