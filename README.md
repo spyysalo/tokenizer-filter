@@ -2,7 +2,7 @@
 
 Tools to analyze and modify tokenizers
 
-## Example
+## Filtering example
 
 ```
 python3 filter_by_script.py openai/gpt-oss-120b Latin --save-dir harmony-latin
@@ -30,3 +30,11 @@ True
 >>> t1.tokenize('日本語は違う') == t2.tokenize('日本語は違う')
 False
 ```
+
+## Graph example
+
+```
+python3 script_plot.py openai/gpt-oss-120b --min-count 2000
+```
+
+<img width="1059" height="882" alt="Screenshot 2025-10-12 at 10 19 33" src="https://github.com/user-attachments/assets/2b2b1549-bbcb-41fb-a7b2-1b1ca3954443" />
