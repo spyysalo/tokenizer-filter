@@ -3,15 +3,14 @@
 # Filter tokenizer vocabulary by script (e.g. only Latin).
 
 import sys
-import re
 import json
-import unicodedata
 
-from collections import defaultdict
 from argparse import ArgumentParser
 
 from tokenizers import Tokenizer
 from transformers import AutoTokenizer
+
+from script_data import load_script_data
 
 
 # Unicode script values to ignore when identifying token script(s)
@@ -25,26 +24,6 @@ def argparser():
     ap.add_argument('--save-dir', default='filtered-tokenizer')
     ap.add_argument('--verbose', action='store_true')
     return ap
-
-
-def load_script_data(fn='Scripts.txt'):
-    # Parse https://www.unicode.org/Public/UNIDATA/Scripts.txt file,
-    # return mapping from code point to script. Adapting in part
-    # https://gist.github.com/anonymous/2204527
-    SCRIPT_LINE_RE = re.compile(r'^([0-9A-Z]{4,5})(?:\.\.([0-9A-Z]{4,5}))?\s+; ([A-Za-z_]+) #.*')
-
-    script_map = defaultdict(lambda: 'Unknown')
-    with open(fn) as f:
-        for ln, l in enumerate(f, start=1):
-            if l.isspace() or l.startswith('#'):
-                continue
-            m = SCRIPT_LINE_RE.match(l)
-            assert m, f'failed to parse line {ln}: {l}'
-            start, end, script = m.groups()
-            for i in range(int(start, 16), int(end or start, 16)+1):
-                assert i not in script_map, f'dup: {i}'
-                script_map[i] = script
-    return script_map
 
 
 def remove_tokens(tokenizer, tokens_to_remove):
@@ -97,7 +76,7 @@ def remove_tokens(tokenizer, tokens_to_remove):
             update_count += 1
 
     traverse(state['post_processor'], update_special_token_ids)
-    print(f'Updated ids for {update_count} special tokens in preprocessor')
+    print(f'Updated ids for {update_count} special tokens in postprocessor')
 
     # Build new tokenizer
     state['model']['vocab'] = filtered_vocab
