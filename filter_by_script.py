@@ -42,6 +42,12 @@ def remove_tokens(tokenizer, tokens_to_remove):
     filtered_merges = [m for m in merges if m[0]+m[1] not in removed_tokens]
     print(f'Filtered merges from {len(merges)} to {len(filtered_merges)}')
 
+    # Sanity check: remaining merges should only involve remaining tokens
+    remaining_tokens = set(filtered_vocab)
+    for m in filtered_merges:
+        assert m[0] in remaining_tokens and m[1] in remaining_tokens
+        assert m[0]+m[1] in remaining_tokens
+
     # Adjust ids of special tokens (which may or may not be in vocab)
     next_free_id, special_token_id = len(filtered_vocab), {}
     for s in state['added_tokens']:
